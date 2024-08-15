@@ -66,3 +66,59 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.app-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.app-header h1 {
+  margin: 0;
+  padding: 10px;
+}
+
+.app-header button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 5px;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.app-header button:hover {
+  background-color: #0056b3;
+}
+
+.app-filters {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.app-filters input[type="text"],
+.app-filters select,
+.app-filters input[type="date"] {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.app-event-list {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.app-event-list p {
+  margin: 0;
+}
+
+
