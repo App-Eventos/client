@@ -1,14 +1,23 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import HomePage from './pages/HomePage'; // Asegúrate de que las rutas sean correctas
+import FavoritesPage from './pages/FavoritesPage/FavoritesPage';
+import EventForm from './components/EventForm/EventForm';
+import LoginForm from './components/LoginForm/LoginForm'; // Importa LoginForm
+import RegisterForm from './components/RegisterForm/RegisterForm'; // Importa RegisterForm
 
-import './App.css'
-
-function App() {
- 
-
+const App = () => {
   return (
-    <>
-      <h1>Aqui se cargara el proyecto...</h1>
-    </>
-  )
-}
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
+        <Route path="/create-event" element={<EventForm />} />
+        <Route path="/login" element={<LoginForm />} /> {/* Ruta para el formulario de login */}
+        <Route path="/register" element={<RegisterForm />} /> {/* Ruta para el formulario de registro */}
+      </Routes>
+    </Router>
+  );
+};
 
-export default App
+export default App;
