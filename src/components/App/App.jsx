@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from './pages/HomePage'; // Asegúrate de que las rutas sean correctas
-import FavoritesPage from './pages/FavoritesPage/FavoritesPage';
-import EventForm from './components/EventForm/EventForm';
-import LoginForm from './components/LoginForm/LoginForm'; // Importa LoginForm
-import RegisterForm from './components/RegisterForm/RegisterForm'; // Importa RegisterForm
+import HomePage from '../../pages/HomePage'; // Asegúrate de que las rutas sean correctas
+import FavoritesPage from '../../pages/FavoritesPage/FavoritesPage';
+import EventForm from '../EventForm/EventForm';
+import LoginForm from '../LoginForm/LoginForm'; // Importa LoginForm
+import RegisterForm from '../RegisterForm/RegisterForm'; // Importa RegisterForm
 
 const App = () => {
   return (
