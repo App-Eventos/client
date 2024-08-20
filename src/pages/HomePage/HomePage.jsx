@@ -5,6 +5,7 @@ import FeaturedEvents from '../../components/FeaturedEvents/FeaturedEvents';
 import LoginForm from '../../components/LoginForm/LoginForm';
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
 import './HomePage.css';
+import axios from 'axios';
 
 const { Option } = Select;
 
@@ -14,7 +15,7 @@ const HomePage = () => {
   const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [category, setCategory] = useState('all');
-  const [location, setLocation] = useState('');
+  const [address, setAddress] = useState('');
   const [date, setDate] = useState('');
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
@@ -22,8 +23,20 @@ const HomePage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/event/list');
+        setEvents(response.data);
+      } catch (error) {
+        console.error('Error al obtener eventos:', error);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  useEffect(() => {
     applyFilters();
-  }, [searchQuery, category, location, date, events]);
+  }, [searchQuery, category, address, date, events]);
 
   const showEventModal = () => {
     if (isAuthenticated) {
@@ -42,7 +55,7 @@ const HomePage = () => {
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
   const handleCategoryChange = (value) => setCategory(value);
-  const handleLocationChange = (e) => setLocation(e.target.value);
+  const handleLocationChange = (e) => setAddress(e.target.value);
   const handleDateChange = (e) => setDate(e.target.value);
 
   const redirectToLogin = (messageText) => {
@@ -63,9 +76,9 @@ const HomePage = () => {
       filtered = filtered.filter((event) => event.category === category);
     }
 
-    if (location) {
+    if (address) {
       filtered = filtered.filter((event) =>
-        event.location.toLowerCase().includes(location.toLowerCase())
+        event.address.toLowerCase().includes(address.toLowerCase())
       );
     }
 
@@ -94,7 +107,6 @@ const HomePage = () => {
       redirectToLogin('Debes iniciar sesión para votar.');
       return;
     }
-
     voteAction();
   };
 
@@ -131,17 +143,23 @@ const HomePage = () => {
             placeholder="Categorías"
             value={category}
             onChange={handleCategoryChange}
-            className="category-select" // Añadido para estilos específicos
+            className="category-select"
           >
             <Option value="all">Todos</Option>
-            <Option value="music">Música</Option>
-            <Option value="sports">Deportes</Option>
-            <Option value="education">Educación</Option>
-            <Option value="entertainment">Entretenimiento</Option>
+            <Option value="teatro">Teatro</Option>
+            <Option value="musica">Música</Option>
+            <Option value="peliculas">Películas</Option>
+            <Option value="taller">Taller</Option>
+            <Option value="gastronomia">Gastronomía</Option>
+            <Option value="automovilismo">Automovilístico</Option>
+            <Option value="juegos">Juegos</Option>
+            <Option value="exposicion">Exposición</Option>
+            <Option value="conferencia">Conferencia</Option>
+            <Option value="deportes">Deportes</Option>
           </Select>
           <Input
             placeholder="Ubicación"
-            value={location}
+            value={address}
             onChange={handleLocationChange}
           />
           <Input type="date" value={date} onChange={handleDateChange} />
@@ -157,6 +175,7 @@ const HomePage = () => {
           onFavoriteToggle={handleFavoriteClick}
           onVoteClick={handleVoteClick}
           favorites={favorites}
+          setEvents={setEvents}
         />
       </div>
 
