@@ -118,6 +118,15 @@
     background-color: rgb(56, 90, 194);
     cursor: pointer;
   }
+
+  .Errormessage {
+    font-size: 14px;
+    font-style: italic;
+    color: rgb(225, 65, 65);
+    font-weight: 600;
+    align-items: center;
+    padding-left: 60px;
+  }
   
   @keyframes pulse {
     from {
@@ -130,3 +139,5 @@
       opacity: 0;
     }
   }
+
+ 
