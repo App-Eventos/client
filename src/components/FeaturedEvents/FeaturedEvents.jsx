@@ -3,6 +3,7 @@ import { Card, Button, Badge } from 'antd';
 import { StarOutlined, StarFilled, LikeOutlined } from '@ant-design/icons';
 import './FeaturedEvents.css';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
 const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents }) => {
@@ -55,7 +56,11 @@ const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents })
           >
             <Badge count={event.votes} overflowCount={99} style={{ backgroundColor: '#52c41a' }}>
               <Card.Meta
-                title={event.title}
+                title={
+                  <Link to={`/event/${event._id}`}>
+                    {event.title}
+                  </Link>
+                }
                 description={`${event.date} - ${event.price}`}
               />
             </Badge>
