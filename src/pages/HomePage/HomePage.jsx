@@ -5,10 +5,12 @@ import FeaturedEvents from '../../components/FeaturedEvents/FeaturedEvents';
 import LoginForm from '../../components/LoginForm/LoginForm';
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
 import './HomePage.css';
+import { useNavigate} from 'react-router-dom';
 
 const { Option } = Select;
 
-const HomePage = () => {
+const HomePage = ({ setLoginValidated }) => {
+  const navigate =useNavigate();
   const [isEventModalVisible, setIsEventModalVisible] = useState(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
@@ -20,6 +22,15 @@ const HomePage = () => {
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+ 
+
+  //función para manejar el éxito del inicio de sesión
+  const handleLoginSuccess = () => {
+    setLoginValidated(true);
+    setIsLoginModalVisible(false); // Cierra el modal después de iniciar sesión
+    setIsAuthenticated(true);
+  };
 
   useEffect(() => {
     applyFilters();
@@ -103,6 +114,12 @@ const HomePage = () => {
     setIsEventModalVisible(false);
   };
 
+  const processLogout = () =>{
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+    navigate ("/login");
+  }
+
   return (
     <div className="homepage-container">
       <div className="homepage-header">
@@ -118,6 +135,10 @@ const HomePage = () => {
             <Button type="default" onClick={showRegisterModal}>
               Crear Cuenta
             </Button>
+            <Button type="default" onClick={processLogout}>
+              Cerrar sesion
+            </Button>
+
           </div>
         </div>
 
@@ -151,6 +172,11 @@ const HomePage = () => {
         </div>
       </div>
 
+      {/* Aquí se agrega el mensaje de inicio de sesión */}
+      {isAuthenticated && (
+        <p>Aquí se cargarán los componentes a visualizarse al hacer inicio de sesión.</p>
+      )}
+
       <div className="featured-events">
         <FeaturedEvents
           events={filteredEvents}
@@ -175,7 +201,9 @@ const HomePage = () => {
         footer={null}
         onCancel={handleLoginModalCancel}
       >
-        <LoginForm onLoginSuccess={() => setIsAuthenticated(true)} />
+        <LoginForm 
+        setLoginValidated={handleLoginSuccess}  
+        onLoginSuccess={() => setIsAuthenticated(true)} />
       </Modal>
 
       <Modal
@@ -186,6 +214,7 @@ const HomePage = () => {
       >
         <RegisterForm />
       </Modal>
+    
     </div>
   );
 };
