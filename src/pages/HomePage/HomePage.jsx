@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Modal, Input, Select, message } from 'antd';
-import EventForm from '../../components/EventForm/EventForm';
-import FeaturedEvents from '../../components/FeaturedEvents/FeaturedEvents';
-import LoginForm from '../../components/LoginForm/LoginForm';
-import RegisterForm from '../../components/RegisterForm/RegisterForm';
-import './HomePage.css';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Button, Modal, Input, Select, message } from "antd";
+import EventForm from "../../components/EventForm/EventForm";
+import FeaturedEvents from "../../components/FeaturedEvents/FeaturedEvents";
+import LoginForm from "../../components/LoginForm/LoginForm";
+import RegisterForm from "../../components/RegisterForm/RegisterForm";
+import "./HomePage.css";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const { Option } = Select;
 
-const HomePage = () => {
+const HomePage = ({ setLoginValidated }) => {
+  const navigate =useNavigate();
   const [isEventModalVisible, setIsEventModalVisible] = useState(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [category, setCategory] = useState('all');
-  const [address, setAddress] = useState('');
-  const [date, setDate] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [category, setCategory] = useState("all");
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [favorites, setFavorites] = useState([]);
@@ -25,10 +27,10 @@ const HomePage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/event/list');
+        const response = await axios.get("http://localhost:8080/event/list");
         setEvents(response.data);
       } catch (error) {
-        console.error('Error al obtener eventos:', error);
+        console.error("Error al obtener eventos:", error);
       }
     };
     fetchEvents();
@@ -39,11 +41,7 @@ const HomePage = () => {
   }, [searchQuery, category, address, date, events]);
 
   const showEventModal = () => {
-    if (isAuthenticated) {
-      setIsEventModalVisible(true);
-    } else {
-      redirectToLogin('Debes iniciar sesión para crear un evento.');
-    }
+    setIsEventModalVisible(true);
   };
 
   const showLoginModal = () => setIsLoginModalVisible(true);
@@ -72,7 +70,7 @@ const HomePage = () => {
       );
     }
 
-    if (category && category !== 'all') {
+    if (category && category !== "all") {
       filtered = filtered.filter((event) => event.category === category);
     }
 
@@ -91,7 +89,7 @@ const HomePage = () => {
 
   const handleFavoriteClick = (eventId) => {
     if (!isAuthenticated) {
-      redirectToLogin('Debes iniciar sesión para agregar a favoritos.');
+      redirectToLogin("Debes iniciar sesión para agregar a favoritos.");
       return;
     }
 
@@ -104,7 +102,7 @@ const HomePage = () => {
 
   const handleVoteClick = (voteAction) => {
     if (!isAuthenticated) {
-      redirectToLogin('Debes iniciar sesión para votar.');
+      redirectToLogin("Debes iniciar sesión para votar.");
       return;
     }
     voteAction();
@@ -114,6 +112,12 @@ const HomePage = () => {
     setEvents([...events, newEvent]);
     setIsEventModalVisible(false);
   };
+
+  const processLogout = () =>{
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+    navigate ("/login");
+  }
 
   return (
     <div className="homepage-container">
@@ -130,6 +134,10 @@ const HomePage = () => {
             <Button type="default" onClick={showRegisterModal}>
               Crear Cuenta
             </Button>
+            <Button type="default" onClick={processLogout}>
+              Cerrar sesion
+            </Button>
+
           </div>
         </div>
 
@@ -169,6 +177,11 @@ const HomePage = () => {
         </div>
       </div>
 
+      Aquí se agrega el mensaje de inicio de sesión
+      {isAuthenticated && (
+        <p>Aquí se cargarán los componentes a visualizarse al hacer inicio de sesión.</p>
+      )}
+
       <div className="featured-events">
         <FeaturedEvents
           events={filteredEvents}
@@ -205,9 +218,9 @@ const HomePage = () => {
       >
         <RegisterForm />
       </Modal>
+    
     </div>
   );
 };
 
 export default HomePage;
-
