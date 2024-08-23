@@ -17,7 +17,7 @@ const HomePage = ({ setLoginValidated }) => {
   const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("all");
-  const [location, setLocation] = useState("");
+  const [address, setAddress] = useState("");
   const [date, setDate] = useState("");
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
