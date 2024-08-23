@@ -6,8 +6,8 @@ import {
   useNavigate,
 } from "react-router-dom";
 import AppProvider from "./context/AppProvider";
-import { PrivateRoutes } from "../routes/PrivateRoutes";
-import { PublicRoutes } from "../routes/PublicRoutes";
+import { PrivateRoutes } from "./routes/PrivateRoutes";
+import { PublicRoutes } from "./routes/PublicRoutes";
 import HomePage from "./pages/HomePage/HomePage";
 import FavoritesPage from "./pages/FavoritesPage/FavoritesPage";
 import EventForm from "./components/EventForm/EventForm";

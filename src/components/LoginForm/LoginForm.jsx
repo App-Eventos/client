@@ -23,8 +23,15 @@ const LoginForm = () => {
     try {
       const response = await axios.post(URL, setting);
             localStorage.setItem("token", response.data.token);
+            localStorage.setItem("user", JSON.stringify(response.data.userFound));
+            localStorage.setItem("isAuthenticated", "true");
+
             // setError(error.response.data.message)
-            setLoginValidated(true);
+            setState({
+              ...state,
+              user: response.data.user,
+              isAuthenticated: true,
+            });
             setError("");
             setEmail("");
             setPassword("");

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { AppContext } from "../src/context/AppProvider";
+import { AppContext } from "../context/AppProvider";
 
 export const PrivateRoutes = ({ children }) => {
   const { state } = useContext(AppContext);

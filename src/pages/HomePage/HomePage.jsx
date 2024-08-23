@@ -17,12 +17,12 @@ const HomePage = ({ setLoginValidated }) => {
   const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("all");
-  const [address, setAddress] = useState("");
+  const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -172,7 +172,7 @@ const HomePage = ({ setLoginValidated }) => {
         </div>
       </div>
 
-      {/* Aquí se agrega el mensaje de inicio de sesión */}
+      Aquí se agrega el mensaje de inicio de sesión
       {isAuthenticated && (
         <p>Aquí se cargarán los componentes a visualizarse al hacer inicio de sesión.</p>
       )}
@@ -201,7 +201,7 @@ const HomePage = ({ setLoginValidated }) => {
         footer={null}
         onCancel={handleLoginModalCancel}
       >
-        <LoginForm />
+        <LoginForm onLoginSuccess={() => setIsAuthenticated(true)} />
       </Modal>
 
       <Modal
