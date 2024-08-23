@@ -29,7 +29,7 @@ const LoginForm = () => {
             // setError(error.response.data.message)
             setState({
               ...state,
-              user: response.data.user,
+              user: response.data.userFound,
               isAuthenticated: true,
             });
             setError("");
