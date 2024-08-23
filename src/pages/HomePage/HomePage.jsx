@@ -10,7 +10,7 @@ import axios from "axios";
 
 const { Option } = Select;
 
-const HomePage = ({ setLoginValidated }) => {
+const HomePage = () => {
   const navigate =useNavigate();
   const [isEventModalVisible, setIsEventModalVisible] = useState(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
@@ -201,7 +201,7 @@ const HomePage = ({ setLoginValidated }) => {
         footer={null}
         onCancel={handleLoginModalCancel}
       >
-        <LoginForm onLoginSuccess={() => setIsAuthenticated(true)} />
+        <LoginForm />
       </Modal>
 
       <Modal
