@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AppContext } from "../../context/AppProvider";
 import "./LoginForm.css";
 import axios from "axios";
 
-const LoginForm = ({setLoginValidated }) => {
-  console.log(setLoginValidated);
+const LoginForm = () => {
+  const { state, setState } = useContext(AppContext);
   const [forgottenPassword, setForgottenPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,13 +22,14 @@ const LoginForm = ({setLoginValidated }) => {
     };
     try {
       const response = await axios.post(URL, setting);
-      localStorage.setItem("token", response.data.token);
-      // setError(error.response.data.message);
-      setLoginValidated(true);
-      setError("");
-      setEmail("");
-      setPassword("");
-      navigate("/");
+            localStorage.setItem("token", response.data.token);
+            // setError(error.response.data.message)
+            setLoginValidated(true);
+            setError("");
+            setEmail("");
+            setPassword("");
+            navigate("/");
+      
     } catch (error) {
       // setError(error.response.data.message);
       setError("Error al iniciar sesión");
