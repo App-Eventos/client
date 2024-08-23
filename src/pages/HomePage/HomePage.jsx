@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Button, Modal, Input, Select, message } from "antd";
-import EventForm from "../../components/EventForm/EventForm";
-import FeaturedEvents from "../../components/FeaturedEvents/FeaturedEvents";
-import LoginForm from "../../components/LoginForm/LoginForm";
-import RegisterForm from "../../components/RegisterForm/RegisterForm";
-import "./HomePage.css";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { Button, Modal, Input, Select, message } from 'antd';
+import EventForm from '../../components/EventForm/EventForm';
+import FeaturedEvents from '../../components/FeaturedEvents/FeaturedEvents';
+import LoginForm from '../../components/LoginForm/LoginForm';
+import RegisterForm from '../../components/RegisterForm/RegisterForm';
+import './HomePage.css';
+import { useNavigate} from 'react-router-dom';
+import axios from 'axios';
 
 const { Option } = Select;
 
