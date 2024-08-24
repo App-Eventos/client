@@ -4,6 +4,7 @@ import { StarOutlined, StarFilled, LikeOutlined } from '@ant-design/icons';
 import './FeaturedEvents.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 
 const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents }) => {
@@ -32,7 +33,7 @@ const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents })
         {sortedEvents.map((event) => (
           <Card
             key={event._id}
-            cover={<img alt={event.title} src={event.imageUrl} />}
+            cover={<img alt={event.title} src={`http://localhost:8080/uploads/${event.imageUrl}`} />}
             actions={[
               <Button
                 type="link"
@@ -61,7 +62,7 @@ const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents })
                     {event.title}
                   </Link>
                 }
-                description={`${event.date} - ${event.price}`}
+                description={`${moment(event.start).format('YYYY-MM-DD HH:mm')} - ${event.price}`}
               />
             </Badge>
           </Card>

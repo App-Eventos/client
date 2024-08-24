@@ -5,13 +5,13 @@ import FeaturedEvents from '../../components/FeaturedEvents/FeaturedEvents';
 import LoginForm from '../../components/LoginForm/LoginForm';
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
 import './HomePage.css';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const { Option } = Select;
 
 const HomePage = () => {
-  const navigate =useNavigate();
+  const navigate = useNavigate();
   const [isEventModalVisible, setIsEventModalVisible] = useState(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
@@ -27,10 +27,10 @@ const HomePage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/event/list");
+        const response = await axios.get('http://localhost:8080/event/list');
         setEvents(response.data);
       } catch (error) {
-        console.error("Error al obtener eventos:", error);
+        console.error('Error al obtener eventos:', error);
       }
     };
     fetchEvents();
@@ -40,14 +40,12 @@ const HomePage = () => {
     applyFilters();
   }, [searchQuery, category, address, date, events]);
 
-  const showEventModal = () => {
-    setIsEventModalVisible(true);
-  };
+  // const showEventModal = () => {setIsEventModalVisible(true);};
 
   const showLoginModal = () => setIsLoginModalVisible(true);
   const showRegisterModal = () => setIsRegisterModalVisible(true);
 
-  const handleEventModalCancel = () => setIsEventModalVisible(false);
+  // const handleEventModalCancel = () => setIsEventModalVisible(false);
   const handleLoginModalCancel = () => setIsLoginModalVisible(false);
   const handleRegisterModalCancel = () => setIsRegisterModalVisible(false);
 
@@ -108,15 +106,16 @@ const HomePage = () => {
     voteAction();
   };
 
+  //Funcion para que se visualice el nuevo evento
   const handleEventCreate = (newEvent) => {
     setEvents([...events, newEvent]);
     setIsEventModalVisible(false);
   };
 
-  const processLogout = () =>{
+  const processLogout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
-    navigate ("/login");
+    navigate("/login");
   }
 
   return (
@@ -125,7 +124,7 @@ const HomePage = () => {
         <div className="header-container">
           <h1>Eventos de Itapúa</h1>
           <div className="button-group">
-            <Button type="primary" onClick={showEventModal}>
+            <Button type="primary" onClick={() => navigate(`/create-event`)}>
               Crear Evento
             </Button>
             <Button type="default" onClick={showLoginModal}>
@@ -176,11 +175,11 @@ const HomePage = () => {
           </Button>
         </div>
       </div>
-
+      {/* 
       Aquí se agrega el mensaje de inicio de sesión
       {isAuthenticated && (
         <p>Aquí se cargarán los componentes a visualizarse al hacer inicio de sesión.</p>
-      )}
+      )} */}
 
       <div className="featured-events">
         <FeaturedEvents
@@ -192,14 +191,14 @@ const HomePage = () => {
         />
       </div>
 
-      <Modal
+      {/* <Modal
         title="Crear Evento"
         open={isEventModalVisible}
         footer={null}
-        onCancel={handleEventModalCancel}
+      // onCancel={handleEventModalCancel}
       >
-        <EventForm onCreate={handleEventCreate} />
-      </Modal>
+        <EventForm onCreate={handleEventCreate} events={events} setEvents={setEvents} />
+      </Modal> */}
 
       <Modal
         title="Iniciar Sesión"
@@ -218,7 +217,7 @@ const HomePage = () => {
       >
         <RegisterForm />
       </Modal>
-    
+
     </div>
   );
 };
