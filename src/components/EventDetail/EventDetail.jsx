@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Button } from 'antd';
 import './EventDetail.css'
+import moment from 'moment';
+
 
 const EventDetail = () => {
   const { eventId } = useParams();
@@ -36,13 +38,12 @@ const EventDetail = () => {
   return (
     <Card title={event.title} className="event-detail-card">
       <p><strong>Descripción:</strong> {event.description}</p>
-      <p><strong>Fecha y hora de inicio:</strong> {event.start}</p>
-      <p><strong>Fecha y hora de fin:</strong> {event.end}</p>
-      <p><strong>Categoría:</strong> {event.category}</p>
+      <p><strong>Fecha y hora de inicio:</strong> {moment(event.start).format('YYYY-MM-DD HH:mm')} </p>
+      <p><strong>Fecha y hora de fin:</strong> {moment(event.end).format('YYYY-MM-DD HH:mm')} </p>
       <p><strong>Acceso:</strong> {event.access}</p>
       <p><strong>Precio:</strong> {event.price}</p>
-      <p><strong>Restricción:</strong> {event.restriction}</p>
-      <p><strong>Ubicación:</strong> {event.location}</p>
+      <p><strong>Restricción:</strong> {event.restriction} </p>
+      <p><strong>Ubicación:</strong> {event.address}</p>
       <p><strong>Contacto:</strong> {event.phoneContact}</p>
       {event.imageUrl && <img src={`http://localhost:8080/uploads/${event.imageUrl}`} alt={event.title} />}
 
