@@ -1,42 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Calendar, Button, Form, Input, DatePicker, Select, Radio, Upload, Checkbox, List, Modal } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import 'antd/dist/reset.css';
 import './EventForm.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+// import { AppContext } from '../../context/AppProvider';
 
 const { Option } = Select;
 
-const EventForm = () => {
-  const [events, setEvents] = useState([]);
+const EventForm = ({ onCreate }) => {
   const [isPrivate, setIsPrivate] = useState(false);
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [isOtherCategory, setIsOtherCategory] = useState(false);
-  const [editingEvent, setEditingEvent] = useState(null); // Se define el estado editingEvent aquí
+  const navigate = useNavigate();
 
-  const handleFormSubmit = (values) => {
-    const newEvent = {
-      ...values,
-      price: values.access === 'privado' ? values.price : 'Gratuito',
-      start: values.date[0].format('YYYY-MM-DD HH:mm'),
-      end: values.date[1].format('YYYY-MM-DD HH:mm'),
-      image: fileList[0]?.originFileObj, // Aquí guardamos el archivo de imagen en el objeto del evento
-    };
+  // const { state } = useContext(AppContext);
 
-    if (editingEvent) {
-      // Actualizar el evento existente
-      setEvents(events.map((event) => (event.key === editingEvent.key ? { ...newEvent, key: event.key } : event)));
-      setEditingEvent(null);
-    } else {
-      // Agregar un nuevo evento
-      setEvents([...events, { ...newEvent, key: events.length }]);
+
+  //Conexion con la base de datos 
+  const handleFormSubmit = async (values) => {
+    try {
+      const newEvent = { //se crea un objeto con los nuevos valores ingresados por el usuario
+        ...values,
+        price: values.access === 'privado' ? values.price : 'Gratuito',
+        start: values.date[0].format('YYYY-MM-DD HH:mm'),
+        end: values.date[1].format('YYYY-MM-DD HH:mm'),
+        image: fileList[0]?.originFileObj,
+      };
+
+      const url = 'http://localhost:8080/event/new';
+      const response = await axios.post(url, newEvent, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      });
+      onCreate(response.data);
+      navigate('/');
+
+    } catch (error) {
+      console.log('Error de solicitud:', error.response?.data || error.message);
     }
 
-    form.resetFields();
-    setFileList([]);
-    setIsPrivate(false);
-    setIsOtherCategory(false);
+    // form.resetFields();
+    // setFileList([]);
+    // setIsPrivate(false);
+    // setIsOtherCategory(false);
+
   };
 
   const handleAccessChange = (e) => {
@@ -51,44 +63,51 @@ const EventForm = () => {
     setFileList(fileList);
   };
 
-  const handleEditEvent = (event) => {
-    setEditingEvent(event);
-    form.setFieldsValue({
-      ...event,
-      date: [moment(event.start), moment(event.end)],
-    });
-    setIsPrivate(event.access === 'privado');
-    setFileList(event.image ? [{ uid: '-1', name: event.image.name, status: 'done', url: event.image }] : []);
-  };
+  //Funcion para editar el evento
+  // const handleEditEvent = (event) => {
+  //   setEditingEvent(event);
+  //   form.setFieldsValue({
+  //     ...event,
+  //     date: [moment(event.start), moment(event.end)],
+  //   });
+  //   setIsPrivate(event.access === 'privado');
+  //   setFileList(event.image ? [{ uid: '-1', name: event.image.name, status: 'done', url: event.image }] : []);
+  // };
 
-  const handleDeleteEvent = (event) => {
-    Modal.confirm({
-      title: '¿Estás seguro que deseas eliminar este evento?',
-      onOk: () => {
-        setEvents(events.filter((ev) => ev.key !== event.key));
-      },
-    });
-  };
+  //Funcion para eliminar el evento
+  // const handleDeleteEvent = async (event) => {
+  //   Modal.confirm({
+  //     title: '¿Estás seguro que deseas eliminar este evento?',
+  //     onOk: async () => {
+  //       try {
+  //         await axios.delete(`http://localhost:8080/event/delete/${event._id}`);
+  //         setEvents(events.filter((ev) => ev._id !== event._id));
+  //       } catch (error) {
+  //         console.error('Error al eliminar el evento:', error);
+  //       }
+  //     },
+  //   });
+  // };
 
-  const cellRender = (value) => {
-    const formattedDate = value.format('YYYY-MM-DD');
-    const currentDayEvents = events.filter(
-      (event) => formattedDate >= event.start.split(' ')[0] && formattedDate <= event.end.split(' ')[0]
-    );
+  // const cellRender = (value) => {
+  //   const formattedDate = value.format('YYYY-MM-DD');
+  //   const currentDayEvents = events.filter(
+  //     (event) => formattedDate >= event.start.split(' ')[0] && formattedDate <= event.end.split(' ')[0]
+  //   );
 
-    return (
-      <ul className="events">
-        {currentDayEvents.map((event, index) => (
-          <li key={index}>
-            <strong>{event.title}</strong>
-            <em>{moment(event.start).format('HH:mm')} - {moment(event.end).format('HH:mm')}</em>
-            <span>{event.description}</span>
-            <span>{event.status}</span>
-          </li>
-        ))}
-      </ul>
-    );
-  };
+  //   return (
+  //     <ul className="events">
+  //       {currentDayEvents.map((event, index) => (
+  //         <li key={index}>
+  //           <strong>{event.title}</strong>
+  //           <em>{moment(event.start).format('HH:mm')} - {moment(event.end).format('HH:mm')}</em>
+  //           <span>{event.description}</span>
+  //           {/* <span>{event.status}</span> */}
+  //         </li>
+  //       ))}
+  //     </ul>
+  //   );
+  // };
 
   return (
     <div className="event-form-container">
@@ -166,15 +185,15 @@ const EventForm = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item
+        {/* <Form.Item
           name="public"
           valuePropName="checked"
         >
           <Checkbox>Apto para todo público</Checkbox>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item
-          name="location"
+          name="address"
           label="Ubicación del evento"
           rules={[{ required: true, message: 'Por favor, introduce la ubicación del evento' }]}
         >
@@ -182,7 +201,7 @@ const EventForm = () => {
         </Form.Item>
 
         <Form.Item
-          name="contact"
+          name="phoneContact"
           label="Número de Teléfono o Email"
           rules={[{ required: true, message: 'Por favor, introduce un número de teléfono o email para contacto' }]}
         >
@@ -222,7 +241,7 @@ const EventForm = () => {
             style={{ width: '100%' }}
           />
         </Form.Item>
-
+        {/* 
         <Form.Item
           name="status"
           label="Estado del evento"
@@ -233,23 +252,23 @@ const EventForm = () => {
             <Option value="cancelado">Cancelado</Option>
             <Option value="suspendido">Suspendido</Option>
           </Select>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            {editingEvent ? 'Guardar Cambios' : 'Crear Evento'}
+            Crear
           </Button>
           <Button type="default" style={{ marginLeft: '10px' }} onClick={() => form.resetFields()}>
-            {editingEvent ? 'Cancelar Edición' : 'Cancelar Evento'}
+            Cancelar
           </Button>
         </Form.Item>
       </Form>
 
-      <div className="calendar-container">
+      {/* <div className="calendar-container">
         <Calendar cellRender={cellRender} />
-      </div>
+      </div> */}
 
-      <List
+      {/* <List
         header={<div>Lista de Eventos</div>}
         bordered
         dataSource={events}
@@ -263,7 +282,7 @@ const EventForm = () => {
             {event.title} - {moment(event.start).format('YYYY-MM-DD HH:mm')} - {moment(event.end).format('YYYY-MM-DD HH:mm')}
           </List.Item>
         )}
-      />
+      /> */}
     </div>
   );
 };
