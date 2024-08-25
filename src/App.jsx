@@ -16,13 +16,6 @@ import RegisterForm from "./components/RegisterForm/RegisterForm";
 import EventDetail from "./components/EventDetail/EventDetail";
 
 const App = () => {
-  // const [loginValidated, setLoginValidated] = useState(false);
-  // // const navigate = useNavigate();
-  // useEffect(() => {
-  //   if (loginValidated) {
-  //     console.log("Usuario ha iniciado sesión");
-  //   }
-  // }, [loginValidated]); // Se ejecuta cuando loginValidated cambia.
 
   return (
     <>
@@ -31,11 +24,7 @@ const App = () => {
           <Routes>
             <Route
               path="/"
-              element={
-                <PublicRoutes>
-                  <HomePage />
-                </PublicRoutes>
-              }
+              element={<HomePage />}
             />
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route

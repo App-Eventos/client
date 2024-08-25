@@ -3,15 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppProvider";
 import "./LoginForm.css";
 import axios from "axios";
+import { message } from "antd";
 
-const LoginForm = () => {
+const LoginForm = ({ onLoginSuccess, onSwitchToRegister }) => {
   const { state, setState } = useContext(AppContext);
-  const [forgottenPassword, setForgottenPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [forgottenPassword, setForgottenPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); // Estado para el mensaje de éxito
-  const navigate = useNavigate(); // Hook para navegar a otra ruta
+  // const navigate = useNavigate(); // Hook para navegar a otra ruta
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -22,24 +23,29 @@ const LoginForm = () => {
     };
     try {
       const response = await axios.post(URL, setting);
-            localStorage.setItem("token", response.data.token);
-            localStorage.setItem("user", JSON.stringify(response.data.userFound));
-            localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.userFound));
+      localStorage.setItem("isAuthenticated", "true");
 
-            // setError(error.response.data.message)
-            setState({
-              ...state,
-              user: response.data.userFound,
-              isAuthenticated: true,
-            });
-            setError("");
-            setEmail("");
-            setPassword("");
-            navigate("/");
-      
+      // setError(error.response.data.message)
+      setState({
+        ...state,
+        user: response.data.userFound,
+        isAuthenticated: true,
+      });
+
+      setError("");
+      setEmail("");
+      setPassword("");
+
+      message.success("Inicio de sesión exitoso"); // Mostrar el mensaje de éxito
+
+      onLoginSuccess(); // Notificar el éxito del inicio de sesión
+      // navigate("/");
     } catch (error) {
       // setError(error.response.data.message);
       setError("Error al iniciar sesión");
+      message.error("Error al iniciar sesión"); // Mostrar el mensaje de error
       console.log(error);
     }
   };
@@ -121,7 +127,9 @@ const LoginForm = () => {
       {!forgottenPassword && (
         <div className="text-center mt">
           ¿Aún no tienes una cuenta?{" "}
-          <Link to="/register">Regístrate gratis!</Link>
+          <a href="#" onClick={onSwitchToRegister}>
+            Registrarse aqui
+          </a>
         </div>
       )}
       {successMessage && (

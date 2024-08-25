@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Modal, Input, Select, message } from 'antd';
-import EventForm from '../../components/EventForm/EventForm';
-import FeaturedEvents from '../../components/FeaturedEvents/FeaturedEvents';
-import LoginForm from '../../components/LoginForm/LoginForm';
-import RegisterForm from '../../components/RegisterForm/RegisterForm';
-import './HomePage.css';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect, useContext } from "react";
+import { Button, Modal, Input, Select, message, Typography  } from "antd";
+import FeaturedEvents from "../../components/FeaturedEvents/FeaturedEvents";
+import "./HomePage.css";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { AppContext } from "../../context/AppProvider";
+import LoginModal from "../../components/LoginModal/LoginModal";
+import RegisterModal from "../../components/RegisterModal/RegisterModal";
 
+const { Title, Text } = Typography;
 const { Option } = Select;
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [isEventModalVisible, setIsEventModalVisible] = useState(false);
-  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
-  const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
+  const { state, setState } = useContext(AppContext);
+  const [visibleModal, setVisibleModal] = useState(null); // Un solo estado para manejar los modales
+  // revisar si es necesario
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [address, setAddress] = useState("");
@@ -22,15 +23,14 @@ const HomePage = () => {
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/event/list');
+        const response = await axios.get("http://localhost:8080/event/list");
         setEvents(response.data);
       } catch (error) {
-        console.error('Error al obtener eventos:', error);
+        console.error("Error al obtener eventos:", error);
       }
     };
     fetchEvents();
@@ -40,15 +40,15 @@ const HomePage = () => {
     applyFilters();
   }, [searchQuery, category, address, date, events]);
 
-  // const showEventModal = () => {setIsEventModalVisible(true);};
+  // Mostrar modales según el tipo
+  const showModal = (type) => setVisibleModal(type);
+  const closeModal = () => setVisibleModal(null);
+  const handleLoginSuccess = () => {
+    closeModal();
+    message.success("Inicio de sesión exitoso"); // Mostrar el mensaje de éxito al cerrar el modal
+  };
 
-  const showLoginModal = () => setIsLoginModalVisible(true);
-  const showRegisterModal = () => setIsRegisterModalVisible(true);
-
-  // const handleEventModalCancel = () => setIsEventModalVisible(false);
-  const handleLoginModalCancel = () => setIsLoginModalVisible(false);
-  const handleRegisterModalCancel = () => setIsRegisterModalVisible(false);
-
+  // Funcion para busqueda de eventos
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
   const handleCategoryChange = (value) => setCategory(value);
   const handleLocationChange = (e) => setAddress(e.target.value);
@@ -86,7 +86,8 @@ const HomePage = () => {
   };
 
   const handleFavoriteClick = (eventId) => {
-    if (!isAuthenticated) {
+    if (!state.isAuthenticated) {
+      // estado global
       redirectToLogin("Debes iniciar sesión para agregar a favoritos.");
       return;
     }
@@ -99,47 +100,75 @@ const HomePage = () => {
   };
 
   const handleVoteClick = (voteAction) => {
-    if (!isAuthenticated) {
+    if (!state.isAuthenticated) {
+      // Usa el estado global
       redirectToLogin("Debes iniciar sesión para votar.");
       return;
     }
     voteAction();
   };
 
-  //Funcion para que se visualice el nuevo evento
-  const handleEventCreate = (newEvent) => {
-    setEvents([...events, newEvent]);
-    setIsEventModalVisible(false);
+  // Función para manejar el clic en "Crear Evento"
+  const handleCreateEventClick = () => {
+    if (!state.isAuthenticated) {
+      showModal("login"); // Mostrar el modal de inicio de sesión si no está autenticado
+    } else {
+      navigate("/create-event"); // Redirigir al formulario de creación de eventos si está autenticado
+    }
   };
 
+  //Funcion para cerrar sesion
   const processLogout = () => {
     localStorage.removeItem("token");
-    setIsAuthenticated(false);
-    navigate("/login");
-  }
+    localStorage.removeItem("user");
+    localStorage.removeItem("isAuthenticated");
+
+    setState(() => ({
+      ...state,
+      user: null,
+      isAuthenticated: false,
+    }));
+
+    navigate("/");
+  };
 
   return (
     <div className="homepage-container">
+      {/* Encabezado de la página */}
       <div className="homepage-header">
+        {/* Mensaje de bienvenida si estás autenticado */}
+        
+        {state.isAuthenticated && (
+          <Title italic >Bienvenido, {state.user.name}</Title>
+        )}
+        
+        {/* // Botones de inicio de sesion, crear cuenta y cerr */}
         <div className="header-container">
           <h1>Eventos de Itapúa</h1>
           <div className="button-group">
-            <Button type="primary" onClick={() => navigate(`/create-event`)}>
+           {/* Botón para crear un evento */}
+            <Button type="primary" onClick={handleCreateEventClick}>
               Crear Evento
             </Button>
-            <Button type="default" onClick={showLoginModal}>
-              Iniciar Sesión
-            </Button>
-            <Button type="default" onClick={showRegisterModal}>
-              Crear Cuenta
-            </Button>
-            <Button type="default" onClick={processLogout}>
-              Cerrar sesion
-            </Button>
-
+            {/* Si no estás autenticado (!state.isAuthenticated), se muestran los botones "Iniciar Sesión" y "Crear Cuenta". */}
+            {!state.isAuthenticated && (
+               <>
+                <Button type="default" onClick={() => showModal("login")}>
+                  Iniciar Sesión
+                </Button>
+                <Button type="default" onClick={() => showModal("register")}>
+                  Crear Cuenta
+                </Button>
+              </>
+            )}
+            {/*Si estás autenticado (state.isAuthenticated), solo se muestra el botón "Cerrar Sesión".*/}
+            {state.isAuthenticated && (
+              <Button type="default" onClick={processLogout}>
+                Cerrar Sesión
+              </Button>
+            )}
           </div>
         </div>
-
         <div className="search-filters">
           <Input
             placeholder="Buscar eventos"
@@ -175,12 +204,7 @@ const HomePage = () => {
           </Button>
         </div>
       </div>
-      {/* 
-      Aquí se agrega el mensaje de inicio de sesión
-      {isAuthenticated && (
-        <p>Aquí se cargarán los componentes a visualizarse al hacer inicio de sesión.</p>
-      )} */}
-
+      {/* Sección de eventos destacados */}
       <div className="featured-events">
         <FeaturedEvents
           events={filteredEvents}
@@ -190,34 +214,19 @@ const HomePage = () => {
           setEvents={setEvents}
         />
       </div>
+      {/* MODALS */}
+      <LoginModal 
+        isVisible={visibleModal === "login"} 
+        onClose={closeModal} 
+        onLoginSuccess={handleLoginSuccess}  Pasar la función de éxito
+        onSwitchToRegister={() => showModal("register")} // Cambiar de login a register
+      />
 
-      {/* <Modal
-        title="Crear Evento"
-        open={isEventModalVisible}
-        footer={null}
-      // onCancel={handleEventModalCancel}
-      >
-        <EventForm onCreate={handleEventCreate} events={events} setEvents={setEvents} />
-      </Modal> */}
-
-      <Modal
-        title="Iniciar Sesión"
-        open={isLoginModalVisible}
-        footer={null}
-        onCancel={handleLoginModalCancel}
-      >
-        <LoginForm />
-      </Modal>
-
-      <Modal
-        title="Crear Cuenta"
-        open={isRegisterModalVisible}
-        footer={null}
-        onCancel={handleRegisterModalCancel}
-      >
-        <RegisterForm />
-      </Modal>
-
+      <RegisterModal
+        isVisible={visibleModal === "register"}
+        onClose={closeModal}
+        onSwitchToLogin={() => showModal("login")} // Cambiar de register a login
+      />
     </div>
   );
 };

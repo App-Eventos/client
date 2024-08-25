@@ -4,7 +4,7 @@ import "./RegisterForm.css";
 import { useState } from "react";
 import axios from "axios";
 
-const RegisterForm = () => {
+const RegisterForm = ({onSwitchToLogin}) => {
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -125,7 +125,9 @@ const RegisterForm = () => {
         </label>
         <button className="submit">Submit</button>
         <p className="signin">
-          ¿Ya tienes una cuenta? <Link to="/login">Iniciar sesión</Link>
+          ¿Ya tienes una cuenta? <a href="#" onClick={onSwitchToLogin}>
+          Iniciar Sesión
+        </a>
         </p>{" "}
         {/* Aquí se usa Link para redirigir */}
         <div className="Errormessage">{error}</div>
