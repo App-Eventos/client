@@ -6,7 +6,6 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
-
 const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents }) => {
 
   const voteForEvent = async (id) => {
@@ -32,40 +31,44 @@ const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents })
       <div className="events-list">
         {sortedEvents.map((event) => (
           <Card
-            key={event._id}
-            cover={<img alt={event.title} src={`http://localhost:8080/uploads/${event.imageUrl}`} />}
-            actions={[
-              <Button
-                type="link"
-                onClick={() => onFavoriteToggle(event._id)}
-                icon={
-                  favorites.includes(event._id) ? (
-                    <StarFilled style={{ color: '#fadb14' }} />
-                  ) : (
-                    <StarOutlined />
-                  )
-                }
-              />,
-              <Button
-                type="link"
-                onClick={() => voteForEvent(event._id)}
-                icon={<LikeOutlined />}
-              >
-                Votar
-              </Button>,
-            ]}
-          >
-            <Badge count={event.votes} overflowCount={99} style={{ backgroundColor: '#52c41a' }}>
-              <Card.Meta
-                title={
-                  <Link to={`/event/${event._id}`}>
-                    {event.title}
-                  </Link>
-                }
-                description={`${moment(event.start).format('YYYY-MM-DD HH:mm')} - ${event.price}`}
-              />
-            </Badge>
-          </Card>
+          key={event._id}
+          className="custom-card"
+          cover={<img alt={event.title} src={`http://localhost:8080/uploads/${event.imageUrl}`} className="custom-card-image" />}
+          actions={[
+            <Button
+              type="link"
+              onClick={() => onFavoriteToggle(event._id)}
+              className="custom-card-button"
+              icon={
+                favorites.includes(event._id) ? (
+                  <StarFilled style={{ color: '#fadb14' }} />
+                ) : (
+                  <StarOutlined />
+                )
+              }
+            />,
+            <Button
+              type="link"
+              onClick={() => voteForEvent(event._id)}
+              className="custom-card-button"
+              icon={<LikeOutlined />}
+            >
+              Votar
+            </Button>,
+          ]}
+        >
+          <Badge count={event.votes} overflowCount={99} className="custom-card-badge">
+            <Card.Meta
+              title={
+                <Link to={`/event/${event._id}`} className="custom-card-title">
+                  {event.title}
+                </Link>
+              }
+              description={`${moment(event.start).format('YYYY-MM-DD HH:mm')} - ${event.price}`}
+              className="custom-card-description"
+            />
+          </Badge>
+        </Card>
         ))}
       </div>
     </div>
@@ -73,5 +76,3 @@ const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents })
 };
 
 export default FeaturedEvents;
-
-

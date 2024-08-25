@@ -1,0 +1,54 @@
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #eaea0f; /* Fondo amarillo claro */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  }
+  
+  .logo-container h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff00bb; /* Color naranja vivo */
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .logo-container h1:hover {
+    color: #ff00bb; /* Cambia a un naranja más claro al pasar el mouse */
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .button-group .ant-btn {
+    font-size: 16px;
+    padding: 5px 15px;
+    border-radius: 4px;
+  }
+  
+  .button-group .ant-btn-primary {
+    background-color: #ff6f00; /* Fondo naranja vivo */
+    border-color: #ff6f00;
+  }
+  
+  .button-group .ant-btn-primary:hover {
+    background-color: #ffa000; /* Fondo naranja más claro al pasar el mouse */
+    border-color: #ffa000;
+  }
+  
+  .button-group .ant-btn-default {
+    border-color: #ff6f00;
+    color: #ff6f00;
+  }
+  
+  .button-group .ant-btn-default:hover {
+    border-color: #ffa000;
+    color: #ffa000;
+  }
+  
+  

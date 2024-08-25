@@ -18,39 +18,30 @@ const EventForm = ({ onCreate }) => {
   const navigate = useNavigate();
   // const { state } = useContext(AppContext);
 
-
-  //Conexion con la base de datos 
+  // Conexion con la base de datos
   const handleFormSubmit = async (values) => {
-    
+    const newEvent = { 
+      ...values,
+      price: values.access === 'privado' ? values.price : 'Gratuito',
+      start: values.date[0].format('YYYY-MM-DD HH:mm'),
+      end: values.date[1].format('YYYY-MM-DD HH:mm'),
+      image: fileList[0]?.originFileObj,
+    };
+
+    const config = {
+      headers: {
+        token_user: localStorage.getItem("token"),
+        'Content-Type': 'multipart/form-data',
+      }
+    };
+
+    const url = 'http://localhost:8080/event/new';
     try {
-      const newEvent = { //se crea un objeto con los nuevos valores ingresados por el usuario
-        ...values,
-        price: values.access === 'privado' ? values.price : 'Gratuito',
-        start: values.date[0].format('YYYY-MM-DD HH:mm'),
-        end: values.date[1].format('YYYY-MM-DD HH:mm'),
-        image: fileList[0]?.originFileObj,
-      };
-
-      const url = 'http://localhost:8080/event/new';
-      const response = await axios.post(url, newEvent, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'token_user': localStorage.getItem('token'), // Envía el token aquí
-
-        }
-      });
-
-      navigate('/');
-
+      const response = await axios.post(url, newEvent, config);
+      navigate('/'); // Redirige al usuario a la página principal después de crear el evento
     } catch (error) {
       console.log('Error de solicitud:', error.response?.data || error.message);
     }
-
-    // form.resetFields();
-    // setFileList([]);
-    // setIsPrivate(false);
-    // setIsOtherCategory(false);
-
   };
 
   const handleAccessChange = (e) => {
@@ -64,52 +55,6 @@ const EventForm = ({ onCreate }) => {
   const handleUploadChange = ({ fileList }) => {
     setFileList(fileList);
   };
-
-  //Funcion para editar el evento
-  // const handleEditEvent = (event) => {
-  //   setEditingEvent(event);
-  //   form.setFieldsValue({
-  //     ...event,
-  //     date: [moment(event.start), moment(event.end)],
-  //   });
-  //   setIsPrivate(event.access === 'privado');
-  //   setFileList(event.image ? [{ uid: '-1', name: event.image.name, status: 'done', url: event.image }] : []);
-  // };
-
-  //Funcion para eliminar el evento
-  // const handleDeleteEvent = async (event) => {
-  //   Modal.confirm({
-  //     title: '¿Estás seguro que deseas eliminar este evento?',
-  //     onOk: async () => {
-  //       try {
-  //         await axios.delete(`http://localhost:8080/event/delete/${event._id}`);
-  //         setEvents(events.filter((ev) => ev._id !== event._id));
-  //       } catch (error) {
-  //         console.error('Error al eliminar el evento:', error);
-  //       }
-  //     },
-  //   });
-  // };
-
-  // const cellRender = (value) => {
-  //   const formattedDate = value.format('YYYY-MM-DD');
-  //   const currentDayEvents = events.filter(
-  //     (event) => formattedDate >= event.start.split(' ')[0] && formattedDate <= event.end.split(' ')[0]
-  //   );
-
-  //   return (
-  //     <ul className="events">
-  //       {currentDayEvents.map((event, index) => (
-  //         <li key={index}>
-  //           <strong>{event.title}</strong>
-  //           <em>{moment(event.start).format('HH:mm')} - {moment(event.end).format('HH:mm')}</em>
-  //           <span>{event.description}</span>
-  //           {/* <span>{event.status}</span> */}
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   );
-  // };
 
   return (
     <div className="event-form-container">
@@ -236,18 +181,6 @@ const EventForm = ({ onCreate }) => {
             style={{ width: '100%' }}
           />
         </Form.Item>
-        {/* 
-        <Form.Item
-          name="status"
-          label="Estado del evento"
-          rules={[{ required: true, message: 'Por favor, selecciona el estado del evento' }]}
-        >
-          <Select>
-            <Option value="activo">Activo</Option>
-            <Option value="cancelado">Cancelado</Option>
-            <Option value="suspendido">Suspendido</Option>
-          </Select>
-        </Form.Item> */}
 
         <Form.Item>
           <Button type="primary" htmlType="submit">
