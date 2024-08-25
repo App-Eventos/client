@@ -21,27 +21,25 @@ const EventForm = ({ onCreate }) => {
 
   //Conexion con la base de datos 
   const handleFormSubmit = async (values) => {
-    e.preventDefault();
-
-    const newEvent = { //se crea un objeto con los nuevos valores ingresados por el usuario
-      ...values,
-      price: values.access === 'privado' ? values.price : 'Gratuito',
-      start: values.date[0].format('YYYY-MM-DD HH:mm'),
-      end: values.date[1].format('YYYY-MM-DD HH:mm'),
-      image: fileList[0]?.originFileObj,
-    };
-    const config = {
-      headers: {
-        'token_user': localStorage.getItem("token"),
-        'Content-Type': 'multipart/form-data',
-        
-      }
-    }
-
-    const url = 'http://localhost:8080/event/new';
+    
     try {
-      const response = await axios.post(url, newEvent, config);
-      // onCreate(response.data);
+      const newEvent = { //se crea un objeto con los nuevos valores ingresados por el usuario
+        ...values,
+        price: values.access === 'privado' ? values.price : 'Gratuito',
+        start: values.date[0].format('YYYY-MM-DD HH:mm'),
+        end: values.date[1].format('YYYY-MM-DD HH:mm'),
+        image: fileList[0]?.originFileObj,
+      };
+
+      const url = 'http://localhost:8080/event/new';
+      const response = await axios.post(url, newEvent, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'token_user': localStorage.getItem('token'), // Envía el token aquí
+
+        }
+      });
+
       navigate('/');
 
     } catch (error) {
