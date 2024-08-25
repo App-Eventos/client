@@ -32,7 +32,7 @@ const EventForm = ({ onCreate }) => {
     };
     const config = {
       headers: {
-        token_user: localStorage.getItem("token"),
+        'token_user': localStorage.getItem("token"),
         'Content-Type': 'multipart/form-data',
       }
     }
