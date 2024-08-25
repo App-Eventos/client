@@ -48,7 +48,7 @@ const App = () => {
               path="/register"
               element={
                 <PublicRoutes>
-                  <RegisterForm />
+                  <RegisterForm onSwitchToLogin={() => navigate("/login")}/>
                 </PublicRoutes>
               }
             />{" "}

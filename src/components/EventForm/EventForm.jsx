@@ -22,6 +22,7 @@ const EventForm = ({ onCreate }) => {
 
   //Conexion con la base de datos 
   const handleFormSubmit = async (values) => {
+    
     try {
       const newEvent = { //se crea un objeto con los nuevos valores ingresados por el usuario
         ...values,
@@ -35,9 +36,11 @@ const EventForm = ({ onCreate }) => {
       const response = await axios.post(url, newEvent, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'token_user': localStorage.getItem('token'), // Envía el token aquí
+
         }
       });
-      onCreate(response.data);
+
       navigate('/');
 
     } catch (error) {

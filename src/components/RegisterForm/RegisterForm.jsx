@@ -31,16 +31,19 @@ const RegisterForm = ({onSwitchToLogin}) => {
       };
       const URL = "http://localhost:8080/user/new";
       const response = await axios.post(URL, newUser);
+       // Guarda el token en localStorage si el servidor lo devuelve
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
+    }
 
-      // localStorage.setItem("token", response.data.token)
       setName("");
       setLastName("");
       setEmail("");
       setPassword("");
       setError("");
       setConfirmPassword("");
-      // this.props.setValidatedLogin(true);
-      navigate("/login");
+      onSwitchToLogin()
+      // navigate("/login");
     } catch (error) {
       console.log("Something went wrong", error);
       // setError(error.response.statusText);

@@ -108,7 +108,7 @@ const HomePage = () => {
     voteAction();
   };
 
-  // Función para manejar el clic en "Crear Evento"
+  // Función para manejar el click en "Crear Evento"
   const handleCreateEventClick = () => {
     if (!state.isAuthenticated) {
       showModal("login"); // Mostrar el modal de inicio de sesión si no está autenticado
