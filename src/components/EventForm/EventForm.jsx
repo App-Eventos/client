@@ -6,7 +6,7 @@ import 'antd/dist/reset.css';
 import './EventForm.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-// import { AppContext } from '../../context/AppProvider';
+import { AppContext } from '../../context/AppProvider';
 
 const { Option } = Select;
 
@@ -16,28 +16,31 @@ const EventForm = ({ onCreate }) => {
   const [fileList, setFileList] = useState([]);
   const [isOtherCategory, setIsOtherCategory] = useState(false);
   const navigate = useNavigate();
-
   // const { state } = useContext(AppContext);
 
 
   //Conexion con la base de datos 
   const handleFormSubmit = async (values) => {
-    try {
-      const newEvent = { //se crea un objeto con los nuevos valores ingresados por el usuario
-        ...values,
-        price: values.access === 'privado' ? values.price : 'Gratuito',
-        start: values.date[0].format('YYYY-MM-DD HH:mm'),
-        end: values.date[1].format('YYYY-MM-DD HH:mm'),
-        image: fileList[0]?.originFileObj,
-      };
+    e.preventDefault();
 
-      const url = 'http://localhost:8080/event/new';
-      const response = await axios.post(url, newEvent, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        }
-      });
-      onCreate(response.data);
+    const newEvent = { //se crea un objeto con los nuevos valores ingresados por el usuario
+      ...values,
+      price: values.access === 'privado' ? values.price : 'Gratuito',
+      start: values.date[0].format('YYYY-MM-DD HH:mm'),
+      end: values.date[1].format('YYYY-MM-DD HH:mm'),
+      image: fileList[0]?.originFileObj,
+    };
+    const config = {
+      headers: {
+        token_user: localStorage.getItem("token"),
+        'Content-Type': 'multipart/form-data',
+      }
+    }
+
+    const url = 'http://localhost:8080/event/new';
+    try {
+      const response = await axios.post(url, newEvent, config);
+      // onCreate(response.data);
       navigate('/');
 
     } catch (error) {
@@ -185,13 +188,6 @@ const EventForm = ({ onCreate }) => {
           </Select>
         </Form.Item>
 
-        {/* <Form.Item
-          name="public"
-          valuePropName="checked"
-        >
-          <Checkbox>Apto para todo público</Checkbox>
-        </Form.Item> */}
-
         <Form.Item
           name="address"
           label="Ubicación del evento"
@@ -258,31 +254,11 @@ const EventForm = ({ onCreate }) => {
           <Button type="primary" htmlType="submit">
             Crear
           </Button>
-          <Button type="default" style={{ marginLeft: '10px' }} onClick={() => form.resetFields()}>
+          <Button type="default" style={{ marginLeft: '10px' }} onClick={() => navigate("/")}>
             Cancelar
           </Button>
         </Form.Item>
       </Form>
-
-      {/* <div className="calendar-container">
-        <Calendar cellRender={cellRender} />
-      </div> */}
-
-      {/* <List
-        header={<div>Lista de Eventos</div>}
-        bordered
-        dataSource={events}
-        renderItem={(event) => (
-          <List.Item
-            actions={[
-              <Button type="link" onClick={() => handleEditEvent(event)}>Editar</Button>,
-              <Button type="link" danger onClick={() => handleDeleteEvent(event)}>Eliminar</Button>,
-            ]}
-          >
-            {event.title} - {moment(event.start).format('YYYY-MM-DD HH:mm')} - {moment(event.end).format('YYYY-MM-DD HH:mm')}
-          </List.Item>
-        )}
-      /> */}
     </div>
   );
 };

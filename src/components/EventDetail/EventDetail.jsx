@@ -40,9 +40,9 @@ const EventDetail = () => {
       <p><strong>Descripción:</strong> {event.description}</p>
       <p><strong>Fecha y hora de inicio:</strong> {moment(event.start).format('YYYY-MM-DD HH:mm')} </p>
       <p><strong>Fecha y hora de fin:</strong> {moment(event.end).format('YYYY-MM-DD HH:mm')} </p>
-      <p><strong>Acceso:</strong> {event.access}</p>
+      <p><strong>Acceso:</strong> {event.access}</p> //cambiar para solo muestre el valor de la restriccion
       <p><strong>Precio:</strong> {event.price}</p>
-      <p><strong>Restricción:</strong> {event.restriction} </p>
+      <p><strong>Restricción:</strong> {event.restriction} </p> //cambiar para solo muestre el valor de la restriccion
       <p><strong>Ubicación:</strong> {event.address}</p>
       <p><strong>Contacto:</strong> {event.phoneContact}</p>
       {event.imageUrl && <img src={`http://localhost:8080/uploads/${event.imageUrl}`} alt={event.title} />}
