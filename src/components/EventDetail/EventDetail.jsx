@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Button } from 'antd';
+import { Card, Button, Tag } from 'antd';
 import './EventDetail.css'
 import moment from 'moment';
 import './EventDetail.css'
@@ -25,6 +25,13 @@ const EventDetail = () => {
   const accessLabels = {
     libre: "Libre",
     privado: "Privado"
+  };
+  // Para cambiar los valores del tag segun el estado.
+  const statusColors = {
+    cancelado: 'red',
+    activo: 'green',
+    suspendido: 'orange',
+    default: 'green',
   };
 
   useEffect(() => {
@@ -54,10 +61,20 @@ const EventDetail = () => {
   const readableRestriction = restrictionLabels[event.restriction] || event.restriction;
   const readableAccess = accessLabels[event.access] || event.access;
 
+  // Determina el color del Tag basado en el estado del evento
+  const tagColor = statusColors[event.status] || statusColors.default;
+
   return (
     <Card className="event-detail-card">
       <h1>{event.title}</h1>
-      {event.imageUrl && <img src={`http://localhost:8080/uploads/${event.imageUrl}`} alt={event.title} />}
+      <div className="image-container">
+        {event.imageUrl && <img src={`http://localhost:8080/uploads/${event.imageUrl}`} alt={event.title} />}
+      </div>
+
+      <div>
+        <Tag color={tagColor}>{event.status}</Tag>
+        <Tag color="orange">{event.category}</Tag>
+      </div>
 
 
       <h3>Descripción</h3>
@@ -84,7 +101,7 @@ const EventDetail = () => {
       <h3>Contacto</h3>
       <p>{event.phoneContact}</p>
 
-      <Button className="volver-button" onClick={() => navigate(-1)}>Volver</Button>
+      <Button className="volver-button" onClick={() => navigate('/')}>Volver</Button>
 
     </Card>
   );
