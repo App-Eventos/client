@@ -8,6 +8,7 @@ import RegisterModal from "../../components/RegisterModal/RegisterModal";
 import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import moment from "moment";
 import { AppContext } from "../../context/AppProvider";
 
 const { Title } = Typography;
@@ -59,13 +60,18 @@ const HomePage = () => {
     showModal("login");
   };
 
+  /*Logica para aplicar los filtros */
   const applyFilters = () => {
     let filtered = events;
 
     if (searchQuery) {
-      filtered = filtered.filter((event) =>
-        event.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      //Logica para que encuentre si hay en caso de ingresar con mas espacios o en minisculas/mayusculas, etc
+      const normalizedQuery = searchQuery.replace(/\s+/g, '').toLowerCase();
+
+      filtered = filtered.filter((event) => {
+        const normalizedTitle = event.title.replace(/\s+/g, '').toLowerCase();
+        return normalizedTitle.includes(normalizedQuery);
+      });
     }
 
     if (category && category !== "all") {
@@ -73,13 +79,19 @@ const HomePage = () => {
     }
 
     if (address) {
-      filtered = filtered.filter((event) =>
-        event.address.toLowerCase().includes(address.toLowerCase())
+      //Logica para que encuentre si hay en caso de ingresar con mas espacios o en minisculas/mayusculas, etc
+      const normalizedAddress = address.replace(/\s+/g, '').toLowerCase();
+
+      filtered = filtered.filter((event) => {
+        const normalizedEventAddress = event.address.replace(/\s+/g, '').toLowerCase();
+        return normalizedEventAddress.includes(normalizedAddress);
+      }
       );
     }
 
     if (date) {
-      filtered = filtered.filter((event) => event.date === date);
+      filtered = filtered.filter((event) =>
+        moment(event.start).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD'));
     }
 
     setFilteredEvents(filtered);
@@ -96,14 +108,6 @@ const HomePage = () => {
         ? prevFavorites.filter((id) => id !== eventId)
         : [...prevFavorites, eventId]
     );
-  };
-
-  const handleVoteClick = (voteAction) => {
-    if (!state.isAuthenticated) {
-      redirectToLogin("Debes iniciar sesión para votar.");
-      return;
-    }
-    voteAction();
   };
 
   const handleCreateEventClick = () => {
@@ -136,7 +140,7 @@ const HomePage = () => {
         showModal={showModal}
         processLogout={processLogout}
       />
-      
+
       {/* Image Carousel */}
       <ImageCarousel />
 
@@ -159,7 +163,6 @@ const HomePage = () => {
           className="category-select"
         >
           <Option value="all">Todos</Option>
-          {/* Otras opciones de categoría */}
           <Option value="teatro">Teatro</Option>
           <Option value="musica">Música</Option>
           <Option value="peliculas">Películas</Option>
@@ -187,7 +190,8 @@ const HomePage = () => {
         <FeaturedEvents
           events={filteredEvents}
           onFavoriteToggle={handleFavoriteClick}
-          onVoteClick={handleVoteClick}
+          state={state}
+          redirectToLogin={redirectToLogin}
           favorites={favorites}
           setEvents={setEvents}
         />

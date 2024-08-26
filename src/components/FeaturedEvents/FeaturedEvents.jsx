@@ -6,9 +6,15 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
-const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents }) => {
+
+const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents, state, redirectToLogin }) => {
 
   const voteForEvent = async (id) => {
+    //Verifica si el usuario ha iniciado
+    if (!state.isAuthenticated) {
+      redirectToLogin("Debes iniciar sesión para votar.");
+      return;
+    }
     try {
       const response = await axios.put(`http://localhost:8080/event/vote/${id}`);
       const updatedEvent = response.data;
