@@ -142,7 +142,7 @@ const HomePage = () => {
       />
 
       {/* Image Carousel */}
-      <ImageCarousel />
+      <ImageCarousel events={events} />
 
       {/* Mensaje de bienvenida si estás autenticado */}
       {state.isAuthenticated && (

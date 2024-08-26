@@ -4,16 +4,20 @@ import image1 from '../../assets/image1.jpg';
 import image2 from '../../assets/image2.jpg';
 import image3 from '../../assets/image3.jpg';
 
-const images = [
-  image1,
-  image2,
-  image3,
-];
+// const images = [
+//   image1,
+//   image2,
+//   image3,
+// ];
 
-const ImageCarousel = () => {
+const ImageCarousel = ({ events }) => {
+  const [images, setImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    const imageUrls = events.map(event => `http://localhost:8080/uploads/${event.imageUrl}`); // Asegúrate de que la propiedad sea correcta
+    setImages(imageUrls);
+
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 10000); // Cambia cada 10 segundos
@@ -21,7 +25,7 @@ const ImageCarousel = () => {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [events, images.length]);
 
   const handleNextClick = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
