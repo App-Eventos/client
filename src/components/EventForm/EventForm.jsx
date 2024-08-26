@@ -20,7 +20,7 @@ const EventForm = ({ onCreate }) => {
 
   // Conexion con la base de datos
   const handleFormSubmit = async (values) => {
-    const newEvent = { 
+    const newEvent = {
       ...values,
       price: values.access === 'privado' ? values.price : 'Gratuito',
       start: values.date[0].format('YYYY-MM-DD HH:mm'),
@@ -30,7 +30,6 @@ const EventForm = ({ onCreate }) => {
 
     const config = {
       headers: {
-        token_user: localStorage.getItem("token"),
         'Content-Type': 'multipart/form-data',
       }
     };
