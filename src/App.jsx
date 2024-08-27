@@ -14,6 +14,8 @@ import EventForm from "./components/EventForm/EventForm";
 import LoginForm from "./components/LoginForm/LoginForm";
 import RegisterForm from "./components/RegisterForm/RegisterForm";
 import EventDetail from "./components/EventDetail/EventDetail";
+import MyEvents from "./pages/MyEventsPage/MyEvents";
+import EditForm from "./components/EditForm/EditForm"
 
 const App = () => {
 
@@ -36,6 +38,22 @@ const App = () => {
               }
             />
             <Route
+              path="/edit-event/:id"
+              element={
+                <PrivateRoutes>
+                  <EditForm />
+                </PrivateRoutes>
+              }
+            />
+            <Route
+              path="/my-events"
+              element={
+                <PrivateRoutes>
+                  <MyEvents />
+                </PrivateRoutes>
+              } // Ruta Mis eventos
+            />
+            <Route
               path="/login"
               element={
                 <PublicRoutes>
@@ -48,12 +66,13 @@ const App = () => {
               path="/register"
               element={
                 <PublicRoutes>
-                  <RegisterForm onSwitchToLogin={() => navigate("/login")}/>
+                  <RegisterForm onSwitchToLogin={() => navigate("/login")} />
                 </PublicRoutes>
               }
             />{" "}
             {/* Ruta para el formulario de registro */}
             <Route path="/event/:eventId" element={<EventDetail />} />
+
           </Routes>
           {/* {loginValidated && (
                 <p>Aquí se cargarán los componentes a visualizarse al hacer inicio de sesión.</p>

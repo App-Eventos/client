@@ -1,0 +1,46 @@
+.my-events-container {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.my-events-container h2 {
+  font-size: 1.5em;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.my-events-container .list-item {
+  background-color: #fff;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+.my-events-container .list-item:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.my-events-container .list-item h2 {
+  font-size: 1em;
+  font-weight: 500;
+  margin: 0;
+}
+
+.my-events-container .list-item p {
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+.my-events-container .ant-list-item {
+  border-bottom: 1px solid #ddd; /* Add a subtle border to each list item */
+}
+
+.volver-button {
+  margin-top: 20px; /* Add margin to center the "Volver" button */
+  text-align: center; /* Center the button horizontally */
+}
