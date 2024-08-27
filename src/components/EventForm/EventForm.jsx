@@ -6,11 +6,14 @@ import 'antd/dist/reset.css';
 import './EventForm.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { AppContext } from '../../context/AppProvider';
+import { AppContext } from "../../context/AppProvider";
+
 
 const { Option } = Select;
 
-const EventForm = ({ onCreate }) => {
+const EventForm = () => {
+  const { state, setState } = useContext(AppContext);
+
   const [isPrivate, setIsPrivate] = useState(false);
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
@@ -20,17 +23,22 @@ const EventForm = ({ onCreate }) => {
 
   // Conexion con la base de datos
   const handleFormSubmit = async (values) => {
+
+    const userId = state.user._id
+
     const newEvent = {
       ...values,
       price: values.access === 'privado' ? values.price : 'Gratuito',
       start: values.date[0].format('YYYY-MM-DD HH:mm'),
       end: values.date[1].format('YYYY-MM-DD HH:mm'),
       image: fileList[0]?.originFileObj,
+      createdBy: userId
     };
 
     const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
+        'token_user': localStorage.getItem('token')
       }
     };
 
