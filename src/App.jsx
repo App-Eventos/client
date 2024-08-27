@@ -26,7 +26,7 @@ const App = () => {
               path="/"
               element={<HomePage />}
             />
-            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/my-favorites" element={<FavoritesPage />} />
             <Route
               path="/create-event"
               element={
@@ -55,9 +55,6 @@ const App = () => {
             {/* Ruta para el formulario de registro */}
             <Route path="/event/:eventId" element={<EventDetail />} />
           </Routes>
-          {/* {loginValidated && (
-                <p>Aquí se cargarán los componentes a visualizarse al hacer inicio de sesión.</p>
-            )} */}
         </Router>
       </AppProvider>
     </>

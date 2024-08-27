@@ -31,6 +31,7 @@ const EventForm = ({ onCreate }) => {
     const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
+        'token_user': localStorage.getItem("token")
       }
     };
 

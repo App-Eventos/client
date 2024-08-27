@@ -1,17 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { List, Button, Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import './FavoritesPage.css';
 
-const favoritesData = [
-  // Simulación de datos de favoritos
-];
-
 const FavoritesPage = () => {
-  const [favorites, setFavorites] = useState(favoritesData);
+  const [favorites, setFavorites] = useState([]);
 
-  const handleRemoveFavorite = (id) => {
-    setFavorites(favorites.filter((fav) => fav.id !== id));
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/user/favorites', {
+          headers: {
+            'token_user': localStorage.getItem("token"), // Asegúrate de pasar el token
+          },
+        });
+        setFavorites(response.data); // Establecer la lista de favoritos obtenida del servidor
+      } catch (error) {
+        console.error('Error al obtener favoritos:', error);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+
+  const handleRemoveFavorite = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8080/user/favorites/${id}`, {
+        headers: {
+          'token_user': localStorage.getItem("token"),
+        },
+      });
+      setFavorites(favorites.filter((fav) => fav._id !== id)); // Actualizar la lista de favoritos
+    } catch (error) {
+      console.error('Error al eliminar favorito:', error);
+    }
   };
 
   return (
@@ -23,21 +46,21 @@ const FavoritesPage = () => {
         renderItem={(event) => (
           <List.Item
             actions={[
-              <Button type="link" danger onClick={() => handleRemoveFavorite(event.id)}>
+              <Button type="link" danger onClick={() => handleRemoveFavorite(event._id)}>
                 Eliminar
               </Button>,
             ]}
           >
             <List.Item.Meta
-              avatar={<Avatar src={event.imageUrl} />}
+              avatar={<Avatar src={`http://localhost:8080/uploads/${event.imageUrl}`} />}
               title={event.title}
-              description={event.date}
+              description={`${event.date}`} // Asegúrate de que `event.date` esté disponible
             />
           </List.Item>
         )}
       />
       <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <Link to="/">Volver a Eventos Destacados</Link>
+        <Link to="/">Volver a Eventos</Link>
       </div>
     </div>
   );
