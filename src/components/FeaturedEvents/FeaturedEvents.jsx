@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { Card, Button, Badge } from "antd";
-import { StarOutlined, StarFilled, LikeOutlined } from "@ant-design/icons";
-import "./FeaturedEvents.css";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import moment from "moment";
+import React, { useState } from 'react';
+import { Card, Button, Badge } from 'antd';
+import { StarOutlined, StarFilled, LikeOutlined } from '@ant-design/icons';
+import './FeaturedEvents.css';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
+import { message } from "antd";
 
-const FeaturedEvents = ({
-  onFavoriteToggle,
-  favorites = [],
-  events,
-  setEvents,
-  state,
-  redirectToLogin,
-}) => {
+
+
+const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents, state, redirectToLogin }) => {
+
+  //para manejar el mensaje de error cuando intenta votar mas de una vez
+  const [messageApi, contextHolder] = message.useMessage();
+
   const voteForEvent = async (id) => {
     //Verifica si el usuario ha iniciado
     if (!state.isAuthenticated) {
@@ -21,16 +21,24 @@ const FeaturedEvents = ({
       return;
     }
     try {
-      const response = await axios.put(
-        `http://localhost:8080/event/vote/${id}`
-      );
+      const url = `http://localhost:8080/event/vote/${id}`
+      const userId = state.user._id;
+
+      const response = await axios.put(url, { userId });
       const updatedEvent = response.data;
 
       setEvents((prevEvents) =>
         prevEvents.map((event) => (event._id === id ? updatedEvent : event))
       );
     } catch (error) {
-      console.error("Error al votar:", error);
+      console.log(error.response?.data?.message || error.message)
+      const errorMessage = error.response?.data?.message || error.message;
+
+      // Usa messageApi para mostrar el mensaje de error
+      messageApi.open({
+        type: 'error',
+        content: errorMessage,
+      });
     }
   };
 
@@ -60,66 +68,70 @@ const FeaturedEvents = ({
   };
 
   return (
-    <div className="featured-events">
-      <h2>Eventos</h2>
-      <div className="events-list">
-        {sortedEvents.map((event) => (
-          <Card
-            key={event._id}
-            className="custom-card"
-            cover={
+    <>
+      {contextHolder}
+      <div className="featured-events">
+        <h2>Eventos</h2>
+        <div className="events-list">
+          {sortedEvents.map((event) => (
+            <Card
+              key={event._id}
+              className="custom-card"
+              cover={
               <img
                 alt={event.title}
                 src={`http://localhost:8080/uploads/${event.imageUrl}`}
                 className="custom-card-image"
               />
             }
-            actions={[
-              <Button
-                type="link"
-                onClick={() => handleFavoriteToggle(event._id)} // Lógica de favoritos aquí                className="custom-card-button"
-                icon={
-                  favorites.includes(event._id) ? (
-                    <StarFilled style={{ color: "#fadb14" }} />
-                  ) : (
-                    <StarOutlined />
-                  )
-                }
-              />,
-              <Button
-                type="link"
-                onClick={() => voteForEvent(event._id)}
-                className="custom-card-button"
-                icon={<LikeOutlined />}
-              >
-                Votar
-              </Button>,
-            ]}
-          >
-            <Badge
+              actions={[
+                <Button
+                  type="link"
+                  onClick={() => handleFavoriteToggle(event._id)} // Lógica de favoritos aquí                  
+                  className="custom-card-button"
+                  icon={
+                    favorites.includes(event._id) ? (
+                      <StarFilled style={{ color: "#fadb14" }} />
+                    ) : (
+                      <StarOutlined />
+                    )
+                  }
+                />,
+                <Button
+                  type="link"
+                  onClick={() => voteForEvent(event._id)}
+                  className="custom-card-button"
+                  icon={<LikeOutlined />}
+                >
+                  Votar
+                </Button>,
+              ]}
+            >
+              <Badge
               count={event.votes}
               overflowCount={99}
               className="custom-card-badge"
             >
-              <Card.Meta
-                title={
-                  <Link
+                <Card.Meta
+                  title={
+                    <Link
                     to={`/event/${event._id}`}
                     className="custom-card-title"
                   >
-                    {event.title}
-                  </Link>
-                }
-                description={`${moment(event.start).format(
+                      {event.title}
+                    </Link>
+                  }
+                  description={`${moment(event.start).format(
                   "YYYY-MM-DD HH:mm"
                 )} - ${event.price}`}
-                className="custom-card-description"
-              />
-            </Badge>
-          </Card>
-        ))}
+                  className="custom-card-description"
+                />
+              </Badge>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
