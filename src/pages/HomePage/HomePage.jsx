@@ -146,7 +146,7 @@ const HomePage = () => {
 
       {/* Mensaje de bienvenida si estás autenticado */}
       {state.isAuthenticated && (
-        <Title  style={{ color: '#20f4c5c' }}
+        <Title  style={{ color: '#023047' }}
         >Bienvenido, {state.user.name}</Title>
       )}
 

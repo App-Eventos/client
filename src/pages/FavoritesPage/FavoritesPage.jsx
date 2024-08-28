@@ -15,7 +15,7 @@ const FavoritesPage = () => {
             'token_user': localStorage.getItem("token"),
           },
         });
-        setFavorites(response.data);
+        setFavorites(response.data); // Establecer la lista de favoritos obtenida del servidor
       } catch (error) {
         console.error('Error al obtener favoritos:', error);
       }
@@ -31,7 +31,7 @@ const FavoritesPage = () => {
           'token_user': localStorage.getItem("token"),
         },
       });
-      setFavorites(favorites.filter((fav) => fav._id !== id));
+      setFavorites(favorites.filter((fav) => fav._id !== id)); // Actualizar la lista de favoritos
     } catch (error) {
       console.error('Error al eliminar favorito:', error);
     }

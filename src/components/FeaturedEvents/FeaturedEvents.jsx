@@ -43,16 +43,17 @@ const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents, s
         return;
     }
 
-    try {
-        // Check if the event is already a favorite
-        if (favorites.includes(eventId)) {
-            messageApi.open({
-                type: 'info',
-                content: "Este evento ya está en tus favoritos.",
-            });
-            return; // Prevent further execution
-        }
+    // Check if the event is already a favorite
+    if (favorites.includes(eventId)) {
+      messageApi.open({
+          type: 'info',
+          content: "Este evento ya está en tus favoritos.",
+      });
+      return; // Prevent further execution
+  }
 
+    try {
+        
         const response = await axios.post(
             "http://localhost:8080/user/favorites",
             { eventId },

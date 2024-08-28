@@ -3,7 +3,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #8ecae6; /* Fondo azul claro */
+    background-color: #023047; /* Fondo azul oscuro */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
   }
   
@@ -11,13 +11,13 @@
     margin: 0;
     font-size: 24px;
     font-weight: bold;
-    color: #dd541e; /* Color naranja */
+    color: #f0eeea; /* Color naranja */
     cursor: pointer;
     transition: color 0.3s ease;
   }
   
   .logo-container h1:hover {
-    color: #ffb703; /* Cambia a un naranja más claro al pasar el mouse */
+    color: #ecbc43; /* Cambia a un naranja más claro al pasar el mouse */
   }
   
   .button-group {

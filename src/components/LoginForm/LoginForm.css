@@ -96,3 +96,8 @@
 .text-center a:hover {
   color: #8ecae6; /* Color del enlace al pasar el ratón */
 }
+
+/* Nuevo color añadido a la paleta */
+.error-message {
+  color: #e36414; /* Color para mensajes de error */
+}
