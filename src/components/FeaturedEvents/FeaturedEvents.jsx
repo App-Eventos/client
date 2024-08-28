@@ -7,21 +7,16 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { message } from "antd";
 
-
-
 const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents, state, redirectToLogin }) => {
-
-  //para manejar el mensaje de error cuando intenta votar mas de una vez
   const [messageApi, contextHolder] = message.useMessage();
 
   const voteForEvent = async (id) => {
-    //Verifica si el usuario ha iniciado
     if (!state.isAuthenticated) {
       redirectToLogin("Debes iniciar sesión para votar.");
       return;
     }
     try {
-      const url = `http://localhost:8080/event/vote/${id}`
+      const url = `http://localhost:8080/event/vote/${id}`;
       const userId = state.user._id;
 
       const response = await axios.put(url, { userId });
@@ -31,10 +26,8 @@ const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents, s
         prevEvents.map((event) => (event._id === id ? updatedEvent : event))
       );
     } catch (error) {
-      console.log(error.response?.data?.message || error.message)
       const errorMessage = error.response?.data?.message || error.message;
 
-      // Usa messageApi para mostrar el mensaje de error
       messageApi.open({
         type: 'error',
         content: errorMessage,
@@ -46,26 +39,47 @@ const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents, s
 
   const handleFavoriteToggle = async (eventId) => {
     if (!state.isAuthenticated) {
-      redirectToLogin("Debes iniciar sesión para agregar a favoritos.");
-      return;
+        redirectToLogin("Debes iniciar sesión para agregar a favoritos.");
+        return;
     }
 
     try {
-      await axios.post(
-        "http://localhost:8080/user/favorites",
-        { eventId },
-        {
-          headers: {
-            token_user: localStorage.getItem("token"), // Aquí estás usando el token
-          },
+        // Check if the event is already a favorite
+        if (favorites.includes(eventId)) {
+            messageApi.open({
+                type: 'info',
+                content: "Este evento ya está en tus favoritos.",
+            });
+            return; // Prevent further execution
         }
-      );
 
-      onFavoriteToggle(eventId); // Notificar a la función principal
+        const response = await axios.post(
+            "http://localhost:8080/user/favorites",
+            { eventId },
+            {
+                headers: {
+                    token_user: localStorage.getItem("token"),
+                },
+            }
+        );
+
+        // Show success message
+        messageApi.open({
+            type: 'success',
+            content: response.data.message, // Message from the server
+        });
+
+        onFavoriteToggle(eventId); // Update the favorites list
+
     } catch (error) {
-      console.error("Error al agregar a favoritos:", error);
+        // Handle specific errors
+        const errorMessage = error.response?.data?.message || "Ocurrió un error al agregar a favoritos.";
+        messageApi.open({
+            type: 'error',
+            content: errorMessage,
+        });
     }
-  };
+};
 
   return (
     <>
@@ -78,16 +92,16 @@ const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents, s
               key={event._id}
               className="custom-card"
               cover={
-              <img
-                alt={event.title}
-                src={`http://localhost:8080/uploads/${event.imageUrl}`}
-                className="custom-card-image"
-              />
-            }
+                <img
+                  alt={event.title}
+                  src={`http://localhost:8080/uploads/${event.imageUrl}`}
+                  className="custom-card-image"
+                />
+              }
               actions={[
                 <Button
                   type="link"
-                  onClick={() => handleFavoriteToggle(event._id)} // Lógica de favoritos aquí                  
+                  onClick={() => handleFavoriteToggle(event._id)}
                   className="custom-card-button"
                   icon={
                     favorites.includes(event._id) ? (
@@ -108,22 +122,22 @@ const FeaturedEvents = ({ onFavoriteToggle, favorites = [], events, setEvents, s
               ]}
             >
               <Badge
-              count={event.votes}
-              overflowCount={99}
-              className="custom-card-badge"
-            >
+                count={event.votes}
+                overflowCount={99}
+                className="custom-card-badge"
+              >
                 <Card.Meta
                   title={
                     <Link
-                    to={`/event/${event._id}`}
-                    className="custom-card-title"
-                  >
+                      to={`/event/${event._id}`}
+                      className="custom-card-title"
+                    >
                       {event.title}
                     </Link>
                   }
                   description={`${moment(event.start).format(
-                  "YYYY-MM-DD HH:mm"
-                )} - ${event.price}`}
+                    "YYYY-MM-DD HH:mm"
+                  )} - ${event.price}`}
                   className="custom-card-description"
                 />
               </Badge>

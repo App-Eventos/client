@@ -41,32 +41,40 @@ const EditEvent = () => {
   // Manejar la actualización del evento
   const handleFinish = async (values) => {
 
-    const updatedEvent = {
-      ...values,
-      price: values.access === 'privado' ? values.price : 'Gratuito',
-      start: values.date[0].format('YYYY-MM-DD HH:mm'),
-      end: values.date[1].format('YYYY-MM-DD HH:mm'),
-      image: fileList[0]?.originFileObj
-    };
-
-    console.log(updatedEvent) // con este console.log verifico que si se cambia antes de enviar 
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.put(`http://localhost:8080/event/edit/${id}`, updatedEvent, {
+       //Cambie esto
+       const updatedEvent = {
+        ...values,
+        start: values.date[0].format('YYYY-MM-DD HH:mm'),
+        end: values.date[1].format('YYYY-MM-DD HH:mm'),
+      };
+  
+      // Verificar si el acceso es "libre" y ajustar el precio
+      if (updatedEvent.access === 'libre') {
+        updatedEvent.price = 'Gratuito';
+      }
+  
+      if (fileList.length > 0) {
+        updatedEvent.image = fileList[0].originFileObj;
+      }
+      const config = {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'token_user': token
+          // 'token_user': localStorage.getItem('token')
         }
-      });
-
-      console.log(response.data) //con este console.log me doy cuenta que no se actualiza
-      message.success('Evento actualizado correctamente.');
-      navigate('/my-events'); // Redirigir al listado de eventos tras la actualización
-    } catch (error) {
-      console.error('Error updating event:', error);
-      message.error('Error al actualizar el evento.');
-    }
-  };
+      };
+  
+      // Cambie esto
+      try {
+        // const token = localStorage.getItem('token');
+        const response = await axios.put(`http://localhost:8080/event/edit/${id}`, updatedEvent, config);
+  
+        message.success('Evento actualizado correctamente.');
+        navigate('/my-events'); // Redirigir al listado de eventos tras la actualización
+      } catch (error) {
+        console.error('Error updating event:', error);
+        message.error('Error al actualizar el evento.');
+      }
+    };
 
 
   const handleAccessChange = (e) => {
@@ -89,7 +97,7 @@ const EditEvent = () => {
           initialValues={{
             title: event.title,
             description: event.description,
-            date: [moment(event.start), moment(event.end)],
+            //date: [moment(event.start), moment(event.end)],
             address: event.address,
             category: event.category,
             restriction: event.restriction,
@@ -189,7 +197,7 @@ const EditEvent = () => {
             <Input />
           </Form.Item>
 
-          {/* <Form.Item
+          <Form.Item
             name="image"
             label="Subir imagen"
           >
@@ -201,7 +209,7 @@ const EditEvent = () => {
             >
               <Button icon={<UploadOutlined />}>Seleccionar Imagen</Button>
             </Upload>
-          </Form.Item> */}
+          </Form.Item>
 
           <Form.Item
             name="description"

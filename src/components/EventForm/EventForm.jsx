@@ -19,7 +19,6 @@ const EventForm = () => {
   const [fileList, setFileList] = useState([]);
   const [isOtherCategory, setIsOtherCategory] = useState(false);
   const navigate = useNavigate();
-  // const { state } = useContext(AppContext);
 
   // Conexion con la base de datos
   const handleFormSubmit = async (values) => {

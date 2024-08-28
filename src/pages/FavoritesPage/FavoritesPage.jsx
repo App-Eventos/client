@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { List, Button, Avatar } from 'antd';
+import { List, Button, Avatar, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 import './FavoritesPage.css';
 
@@ -12,10 +12,10 @@ const FavoritesPage = () => {
       try {
         const response = await axios.get('http://localhost:8080/user/favorites', {
           headers: {
-            'token_user': localStorage.getItem("token"), // Asegúrate de pasar el token
+            'token_user': localStorage.getItem("token"),
           },
         });
-        setFavorites(response.data); // Establecer la lista de favoritos obtenida del servidor
+        setFavorites(response.data);
       } catch (error) {
         console.error('Error al obtener favoritos:', error);
       }
@@ -31,14 +31,26 @@ const FavoritesPage = () => {
           'token_user': localStorage.getItem("token"),
         },
       });
-      setFavorites(favorites.filter((fav) => fav._id !== id)); // Actualizar la lista de favoritos
+      setFavorites(favorites.filter((fav) => fav._id !== id));
     } catch (error) {
       console.error('Error al eliminar favorito:', error);
     }
   };
 
+  const confirmRemoveFavorite = (id) => {
+    Modal.confirm({
+      title: '¿Estás seguro que deseas eliminar este evento de la lista de favoritos?',
+      okText: 'Sí',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        handleRemoveFavorite(id);
+      },
+    });
+  };
+
   return (
-    <div className="favorites-container"> {/* Aplicar la clase CSS aquí */}
+    <div className="favorites-container">
       <h1>Mis Favoritos</h1>
       <List
         itemLayout="horizontal"
@@ -46,7 +58,7 @@ const FavoritesPage = () => {
         renderItem={(event) => (
           <List.Item
             actions={[
-              <Button type="link" danger onClick={() => handleRemoveFavorite(event._id)}>
+              <Button type="link" danger onClick={() => confirmRemoveFavorite(event._id)}>
                 Eliminar
               </Button>,
             ]}
@@ -54,7 +66,7 @@ const FavoritesPage = () => {
             <List.Item.Meta
               avatar={<Avatar src={`http://localhost:8080/uploads/${event.imageUrl}`} />}
               title={event.title}
-              description={`${event.date}`} // Asegúrate de que `event.date` esté disponible
+              description={event.description || 'No hay descripción disponible'} // Mostrar la descripción o un mensaje alternativo
             />
           </List.Item>
         )}
