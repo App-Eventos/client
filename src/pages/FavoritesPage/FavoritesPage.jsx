@@ -38,7 +38,7 @@ const FavoritesPage = () => {
   };
 
   return (
-    <div>
+    <div className="favorites-container"> {/* Aplicar la clase CSS aquí */}
       <h1>Mis Favoritos</h1>
       <List
         itemLayout="horizontal"
@@ -59,7 +59,7 @@ const FavoritesPage = () => {
           </List.Item>
         )}
       />
-      <div style={{ marginTop: '20px', textAlign: 'center' }}>
+      <div className="back-to-events">
         <Link to="/">Volver a Eventos</Link>
       </div>
     </div>

@@ -29,6 +29,7 @@ body {
   margin: 0;
   font-size: 36px; /* Aumentar el tamaño de la fuente */
   font-weight: bold;
+  color: #023047; /* Color principal del encabezado */
 }
 
 .header-container .button-group {
@@ -37,7 +38,7 @@ body {
 
 .header-container .button-group button {
   margin-right: 10px;
-  background-color: #1890ff;
+  background-color: #219ebc; /* Color del botón */
   color: white;
   border: none;
   padding: 10px 20px;
@@ -51,7 +52,7 @@ body {
 }
 
 .header-container .button-group button:hover {
-  background-color: #40a9ff;
+  background-color: #8ecae6; /* Color del botón al pasar el ratón */
 }
 
 /* Filtros de búsqueda */
@@ -108,6 +109,7 @@ body {
   font-size: 18px;
   padding: 10px;
   margin-bottom: 20px;
+  color: #023047; /* Color del texto */
 }
 
 /* Responsivo para pantallas pequeñas */
@@ -147,5 +149,3 @@ body {
     min-height: auto;
   }
 }
-
-

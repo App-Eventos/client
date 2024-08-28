@@ -1,20 +1,58 @@
+/* Estilo general para el contenedor */
+.favorites-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra la lista */
+  margin: 20px;
+}
+
+/* Estilo del encabezado */
 h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .ant-list-item {
-    padding: 10px 20px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  
-  .ant-list-item-meta-title {
-    font-size: 16px;
-    font-weight: bold;
-  }
-  
-  .ant-list-item-meta-description {
-    font-size: 14px;
-    color: #777;
-  }
-  
+  text-align: center;
+  margin-bottom: 20px;
+  color: #219ebc; /* Color azul de la paleta */
+}
+
+/* Estilo para los elementos de la lista */
+.ant-list {
+  width: 80%; /* Aumenta el ancho de la lista */
+  max-width: 800px; /* Establece un ancho máximo */
+}
+
+/* Estilo para los elementos de la lista */
+.ant-list-item {
+  padding: 10px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Títulos de los elementos de la lista */
+.ant-list-item-meta-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffb703; /* Color naranja de la paleta */
+}
+
+/* Descripciones de los elementos de la lista */
+.ant-list-item-meta-description {
+  font-size: 14px;
+  color: #777;
+}
+
+/* Estilo para el enlace de volver a eventos */
+.back-to-events {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.back-to-events a {
+  background-color: #219ebc; /* Color azul de la paleta */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.back-to-events a:hover {
+  background-color: #8ecae6; /* Color azul claro al pasar el mouse */
+}

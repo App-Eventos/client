@@ -146,7 +146,8 @@ const HomePage = () => {
 
       {/* Mensaje de bienvenida si estás autenticado */}
       {state.isAuthenticated && (
-        <Title italic>Bienvenido, {state.user.name}</Title>
+        <Title  style={{ color: '#20f4c5c' }}
+        >Bienvenido, {state.user.name}</Title>
       )}
 
       {/* Filtros de búsqueda */}
